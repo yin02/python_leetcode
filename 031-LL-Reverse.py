@@ -1,43 +1,49 @@
-class Node:
-    def __init__(self, value):
+class Node:# first of first  create node class
+    def __init__(self, value):#
         self.value = value
         self.next = None
         
 
 class LinkedList:
     def __init__(self, value):
-        new_node = Node(value)
-        self.head = new_node
-        self.tail = new_node
+        new_node = Node(value)  # value 存入 Node
+        self.head = new_node  # head 指向 new—node
+        self.tail = new_node  # tail 指向 new- node
         self.length = 1
 
-    def print_list(self):
-        temp = self.head
+    def print_list(self): # 思想：给一个temp指针，把temp一个个的传到下一个node
+        temp = self.head # temp 指向head
         while temp is not None:
             print(temp.value)
-            temp = temp.next
+            temp = temp.next # temp指向下一个node
         
-    def append(self, value):
+    def append(self, value):#加一个node，先给指针赋值，再把tail往下移
         new_node = Node(value)
         if self.length == 0:
             self.head = new_node
             self.tail = new_node
         else:
-            self.tail.next = new_node
-            self.tail = new_node
-        self.length += 1
+            self.tail.next = new_node # tail.next=tail的next指针 等于new node
+            self.tail = new_node # tail 指向new—node
+        self.length += 1 # 用counter每次+1
         return True
 
     def pop(self):
+    ##boundary 长度是0的list
+    ## 删除最后的node，思想：当temp.next（temp的指针）往下迭代到none ，
+    ##两个指针 pre 和tem ， tem先走，直到最后，pre后走，就知道删掉一个后新的最后了
+    ##最后tail 指向 pre，tail的指针指向none，长度-1 后bounday： length- 到0
+    ##head 和tail都是none了 
+    ##temp还指向 最后一个，return了才可以移除
         if self.length == 0:
             return None
         temp = self.head
         pre = self.head
-        while(temp.next):
+        while(temp.next):#默认结束条件是none，小竞赛指针
             pre = temp
             temp = temp.next
         self.tail = pre
-        self.tail.next = None
+        self.tail.next = None ##把tail的指针和最后一个temp指的node分开
         self.length -= 1
         if self.length == 0:
             self.head = None
