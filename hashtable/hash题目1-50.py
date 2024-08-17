@@ -733,13 +733,12 @@ def speicalArray(nums):
 #counting sort、
 def specialArray(nums):
     count = [0] * (len(nums)+1)
-    #这边都是填充count数组而已
     for n in nums:
         # 最后一个前面的index就是自己，最后后面的都算作最后一个上面
-        index = n if n < len(nums) else len(nums)#min(n,len(nums))
+        index = n if n < len(nums) else len(nums)        #min(n,len(nums))
         count[index] +=1
     total_right = 0
-    #想象右边比这个大的，反过来 一个一个增加如果和当前数字相等
+    #反过来 一个一个增加如果和当前数字相等
     #后面的计数是从小往大的，因为右边大的越来越多，往左走时候
     for i in reversed(range(len(nums)+1)):
         total_right += count[i]
