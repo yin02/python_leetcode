@@ -1,0 +1,335 @@
+Contain Duplicate
+Create a set, check if already exists.
+
+isAnagram
+Check the word count for every character. Pay attention to the length: if the lengths are different, there's no need to check further. Compare the result for equality. The key is the words, and the value is the counts stored in a dictionary.
+
+Get Concatenation
+Input: nums = [1,2,1]
+Output: [1,2,1,1,2,1]
+
+Iterate through the array twice.
+
+Replace Element
+Input: [17,18,5,4,6,1]
+Output: [18,6,6,6,1,-1]
+
+Since the last element needs to be replaced with -1:
+
+Record the max value.
+Update it.
+Renew the value.
+If the current value has no greater element on its right, replace it with -1.
+
+isSubsequence
+Input: s = "abc", t = "ahbgdc"
+Output: True
+
+Use two pointers for the smaller string.
+
+Length of the Last Element
+Input: s = "Hello World"
+Output: 5
+
+Reverse iterate, exclude the empty spaces at the start, return the count if it's greater than 1, otherwise keep adding, and return at the end.
+
+Two Sum
+Use prevMap to return the index. Use a hashmap for value:index. Enumerate through, diff = target - n, and if not found, keep updating value:index.
+
+Group Anagram
+ans => dic(list)
+
+Get count for 26 characters:
+
+#word #C
+ord(c - "a") += 1
+Word count goes into answer. count:key, v: word, where one key can have multiple values. Convert the list to a tuple since it cannot be used as a key. Return ans.values().
+
+Generate
+Initialize the result, make [0] on both sides. Get the height, calculate every width by the previous one. Since the first is already obtained, calculate each number.
+
+Remove Element
+Given a value, target, return the count not equal to the target and modify the non-existent numbers to _.
+
+Get a pointer count with an index. If not satisfied, increase the pointer and replace the current number with the pointer count from the start.
+
+Num of Unique Email
+Input: emails = ["test.email+alex@leetcode.com","test.e.mail+bob.cathy@leetcode.com","testemail+david@lee.tcode.com"]
+
+Create a set. Split the email into local and domain parts. The local part is the first split [0].
+
+isIsomorphic
+Use two hash sets to check if the characters exist inside each other and keep adding.
+
+CanFlower
+Check if both sides have zero, directly add to it. Check if three empty spaces are the only option. Iterate through the entire array.
+
+Major Element
+Use a counter. Whatever is left is the major element.
+
+Next Greater Element
+Some element x in an array is the first greater element to the right of x in the same array.
+
+Input: nums1 = [4,1,2], nums2 = [1,3,4,2]
+Output: [-1,3,-1]
+
+Store v:i for num1. Initialize all to -1, which could solve the details. Use a stack, iterate through num2, get the current value, and if it exists in num1, add it to the stack. Only pop the value if it's greater than the stack. Last in, first out. Get the index of the current num1 by the value popped, then add the value to the current index.
+
+Pivot Index
+Problem: The pivot index is where the sum of all the numbers to the left equals the sum of all the numbers to the right.
+
+Input: nums = [1, 7, 3, 6, 5, 6]
+Output: 3
+
+Get the total sum.
+Increment leftsum += num[i].
+Calculate right sum = total - num[i] - leftsum.
+Num Array
+求一定范围内的和。
+
+Create a prefix sum, then sum the numbers from 0 to the prefix. left and right define the range. Subtract the right sum from the left sum. The left sum is self.prefix[left-1] if left > 0 else 0.
+
+Find Disappeared Numbers
+Map [0,n-1] to [1,n]. Some numbers may not exist, so they wouldn't be indexed.
+
+Iterate through all the numbers. This index is positive, so abs(n)-1. Turn each appropriate index negative. Create a res, and append each index. If there's a positive number, it means the number is missing, so add it directly.
+
+Maximum Number of Balloons
+Problem: Count the maximum number of times the word "balloon" can be formed from the given string.
+
+Solution: Count the frequency of each letter in the word "balloon" and use the minimum count considering the repetition of 'l' and 'o'.
+
+Word Pattern
+Problem: Determine if a pattern matches a string following a one-to-one mapping.
+
+Solution: Use two hash maps to ensure bijective mapping between pattern characters and words.
+
+Design HashSet
+Problem: Implement a hash set without using built-in hash set libraries.
+
+Solution: Use a list of buckets, each bucket being a list, to handle collisions.
+
+Design HashMap
+Problem: Implement a hash map without using built-in hash map libraries.
+
+Solution: Similar to HashSet, use a list of buckets where each bucket is a list of key-value pairs.
+
+Monotonic Array
+Solution: Check if the entire array is sorted in non-decreasing order or non-increasing order.
+
+Number of Good Pairs
+Problem: Count the number of good pairs (i, j) such that nums[i] == nums[j] and i < j.
+
+Solution: Use a hash map to count occurrences of each number and use combinations to calculate pairs.
+
+Pascal's Triangle II
+Problem: Return the k-th row of Pascal's triangle.
+
+Return the rowIndex-th (0-indexed) row of Pascal's triangle.
+
+Initialize the first row as [1].
+Initialize the next entire array.
+Each element in the next row equals res[j].
+Find Words That Can Be Formed by Characters
+Problem: Count words that can be formed using the given characters.
+
+Solution: Use a counter to compare the frequency of characters in each word with the given characters.
+
+Largest Number
+Problem: Find the largest number formed by three identical digits in a string.
+
+Input: s = "6777133339"
+Output: "777"
+
+Solution: Iterate through the string and check for triplets of the same digit. The row always has the same width and the gap is the same length. The key is the position, which is the length; the value is the count of the gap. Find the key with the most gaps.
+
+python
+Copy code
+class Solution:
+    def largestGoodInteger(self, num):
+        res = "0"
+        for i in range(len(num) - 2):
+            if num[i] == num[i + 1] == num[i + 2]:
+                return max(res, num[i:i + 3])
+        return "" if res == "0" else res
+Least Bricks
+Given the 2D array wall that contains the information about the wall, return the minimum number of crossed bricks after drawing such a vertical line.
+
+The row always has the same width and the gap is the same length. The key is the position, which is the length; the value is the count of the gap. Find the key with the most gaps.
+
+python
+Copy code
+class Solution:
+    def leastBricks(self, wall):
+        countGap = {0: 0}
+        for r in wall:
+            total = 0
+            for b in r[:-1]:
+                total += b
+                countGap[total] = 1 + countGap.get(total, 0)
+        return len(wall) - max(countGap.values())
+Destination City
+Problem: Find the destination city in a path described by pairs of cities.
+
+Solution: Use a set to track cities that are starting points and find the city not in this set. The city without an outgoing node is the destination.
+
+python
+Copy code
+class Solution:
+    def destCity(self, paths):
+        s = set()
+        for p in paths:
+            s.add(p[0])
+        for p in paths:
+            if p[1] not in s:
+                return p[1]
+Maximum Product Difference Between Two Pairs
+Problem: Find the maximum product difference between two pairs.
+
+Solution: Sort the array and use the largest and smallest values to calculate the product difference.
+
+Maximum Score After Splitting a String
+Problem: Maximize the score by splitting the string into two non-empty parts.
+
+Solution: Calculate left and right scores iteratively and track the maximum score.
+
+Path Crossing
+Problem: Determine if a path crosses itself.
+
+Solution: Use a set to track visited coordinates and check for revisits.
+
+Minimum Changes To Make Alternating Binary String
+Problem: Count the minimum changes to make a binary string alternating (no two consecutive characters are the same).
+
+Solution: Compare the given string with "010101..." and "101010..." to find the minimum changes needed.
+
+python
+Copy code
+class Solution:
+    def minOperations(self, s):
+        count = 0  # start with 0; for even we hope 0, odd we hope 1
+        for i in range(len(s)):
+            # odd, because i%2 == 1
+            if i % 2:
+                count += 1 if s[i] == "0" else 0
+            else:
+                count += 1 if s[i] == "1" else 0
+        return min(count, len(s) - count)
+Redistribute Characters to Make All Strings Equal
+Problem: Determine if characters from all strings can be redistributed to make all strings equal.
+
+Input: words = ["abc","aabc","bc"]
+Output: true
+
+Move one word to make all words equal.
+
+Solution: Check if each character's total count is divisible by the number of strings.
+
+Largest Substring Between Two Equal Characters
+Problem: Find the largest substring between two equal characters.
+
+Input: s = "abca"
+Output: 2
+
+Explanation: The optimal substring here is "bc".
+
+Solution: Use a hash map to track the first occurrence of each character and calculate the maximum distance.
+
+python
+Copy code
+if c in char_index:
+    res = max(res, i - char_index[c] - 1)
+Set Mismatch
+Problem: Find the duplicate and missing numbers in an array from 1 to n.
+
+Example 1:
+Input: nums = [1,2,2,4]
+Output: [2,3]
+
+Example 2:
+Input: nums = [1,1]
+Output: [1,2]
+
+Solution: Use a set to find the duplicate and calculate the missing number by sum comparison.
+
+python
+Copy code
+def findErrorNums(nums):
+    res = [0, 0]
+    count = Counter(nums)
+    # change to 1 based
+    for i in range(1, len(nums) + 1):
+        if count[i] == 0:
+            res[1] == i
+        if count[i] == 2:
+            res[0] == i 
+    return res
+First Unique Character in a String
+Problem: Find the first non-repeating character in a string.
+
+Solution: Use a hash map to count character frequencies and find the first with a count of 1.
+
+Intersection of Two Arrays
+Problem: Find the intersection of two arrays.
+
+Solution: Use sets to find the common elements.
+
+Another method is to check if the element is in the set:
+
+python
+Copy code
+seen = set(nums1)
+res = []
+for n in nums2:
+    if n in seen:
+        res.append(n)
+        seen.remove(n)
+Number of Students Unable to Eat Lunch
+Problem: Count the number of students who can't eat their preferred sandwich.
+
+Input: students = [1,1,0,0], sandwiches = [0,1,0,1]
+Output: 0
+
+Some students want to eat 1, some want to eat 0.
+
+Solution: Use a queue for students and a stack for sandwiches to simulate the eating process.
+
+python
+Copy code
+for s in sandwiches:
+    if cnt[s] > 0:
+        res -= 1
+        cnt -= 1
+Time Needed to Buy Tickets
+Problem: Calculate the time needed for all people to buy tickets.
+
+Input: tickets = [2,3,2], k = 2
+Output: 6
+
+Solution: Simulate the process by decrementing each person's ticket count until all are served.
+
+If i < k, the time is the minimum of the ticket time or the smaller ticket time.
+If i > k, the time is k-1 times or the other times since k is always in front.
+Special Array with X Elements Greater than or Equal to X
+Problem: Find a special value x such that there are x numbers greater than or equal to x.
+
+Input: nums = [3,5]
+Output: 2
+
+Input: nums = [0,0]
+Output: -1
+Explanation: No numbers fit the criteria for x.
+
+Input: nums = [0,4,3,0,4]
+Output: 3
+
+It doesn't matter if the number exists in the array or not.
+
+Solution: Sort the array and check possible values of x.
+
+The length of nums is key:
+
+This groups all values greater than or equal to len(nums) together.
+Count: First, use a count array to record the occurrence of each element and group all values greater than len(nums) together.
+Reverse Accumulate: Then, traverse the count array in reverse, accumulating all elements greater than or equal to the current index and check if it equals the current index.
+Start from the right, if there are more significant values on the right, count them. If the count matches the index, then you've found the integer.
