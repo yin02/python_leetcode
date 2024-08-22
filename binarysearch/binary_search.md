@@ -1,5 +1,4 @@
 
-
 ## 二分查找的伪代码
 ```python
 红蓝边界
@@ -262,7 +261,7 @@ def getMinimumOperation(executionTime, x, y):
 
 <font color="red" size="4">l+1 != r 常错，不是l =r 是l+1 != r。</font>
 
-
+# 当问题翻译成找到什么的时候都可以用二分法或者two pointer来试试
 
 ## Minimum Eating Speed
 
@@ -376,9 +375,200 @@ class Solution:
 
 ```
 
+## Guess Number Higher or Lower
+
+### 问题描述
+
+你正在玩一个猜数字的游戏。游戏规则如下：
+
+有一个秘密数字 `n`，这个数字位于 1 和 `n` 之间。你的目标是通过调用 `guess(num)` 函数来猜测这个数字。`guess(num)` 会返回以下三个值之一：
+
+- `-1`：表示你猜的数字比秘密数字大。
+- `1`：表示你猜的数字比秘密数字小。
+- `0`：表示你猜的数字恰好是秘密数字。
+
+请实现一个函数 `guessNumber(int n)` 来猜测秘密数字，并返回该数字。
+
+### 输入
+
+- 一个整数 `n`，表示数字的上限，猜测的数字在 `1` 到 `n` 之间。
+
+### 输出
+
+- 返回猜中的数字。
+
+### 解决方案
+
+1. **初始化变量**:
+   - 定义左右边界 `l` 和 `r`，分别表示搜索范围的左边界和右边界。
+   - 初始时，`l` 设置为 `0`，`r` 设置为 `n + 1`，这样可以确保二分查找时的范围完全覆盖 `1` 到 `n`。
+
+2. **二分查找**:
+   - 通过二分查找逐步缩小范围，直到找到秘密数字。
+   - 计算中间值 `mid`，并调用 `guess(mid)` 函数来确定下一步动作。
+
+3. **检查条件**:
+   - 如果 `guess(mid)` 返回 `-1`，表示猜的数字太大，将右边界缩小到 `mid`。
+   - 如果 `guess(mid)` 返回 `1`，表示猜的数字太小，将左边界增大到 `mid`。
+   - 如果 `guess(mid)` 返回 `0`，表示猜中了，直接返回 `mid`。
+
+4. **返回结果**:
+   - 当 `guess(mid)` 返回 `0` 时，返回 `mid` 作为猜测的结果。
+
+### Code
+
+```python
+class Solution:
+    def guessNumber(self, n: int) -> int:
+        l, r = 0, n + 1  # 初始化边界，l 从 0 开始，r 为 n+1
+        while True:  # 循环直到找到秘密数字
+            mid = l + (r - l) // 2  # 计算中间值
+            myGuess = guess(mid)
+            if myGuess == -1:
+                r = mid  # 如果猜测大于秘密数字，缩小右边界
+            elif myGuess == 1:
+                l = mid  # 如果猜测小于秘密数字，增大左边界
+            else:
+                return mid  # 如果猜中了，返回中间值
+```
 
 
 
 
 
+## Problem: Arranging Coins
 
+You have `n` coins and you want to build a staircase with these coins. The staircase consists of `k` rows, where the `i-th` row has exactly `i` coins. The last row of the staircase may be incomplete.
+
+Given the integer `n`, return the number of complete rows of the staircase you will be able to form.
+
+### Example:
+
+- **Input**: `n = 5`
+- **Output**: `2`
+  - **Explanation**: The coins can form the following rows:
+    - Row 1: 1 coin
+    - Row 2: 2 coins
+    - Row 3: 2 coins (incomplete, so it's not counted)
+  
+- **Input**: `n = 8`
+- **Output**: `3`
+  - **Explanation**: The coins can form the following rows:
+    - Row 1: 1 coin
+    - Row 2: 2 coins
+    - Row 3: 3 coins
+    - Row 4: 2 coins (incomplete, so it's not counted)
+
+## Solution Code:
+
+```python
+class Solution:
+    def arrangeCoins(self, n: int) -> int:
+        l, r = 0, n + 1
+        while l + 1 != r:
+            # mid is the target number of complete rows
+            mid = (l + r) // 2
+            coins = mid * (mid + 1) // 2
+            # If the coins needed is greater than n, move to the left
+            if coins > n:
+                r = mid
+            else:
+                l = mid
+        return l
+```
+
+
+
+## Problem: Valid Perfect Square
+
+Given a positive integer `num`, write a function that returns `True` if `num` is a perfect square, otherwise return `False`.
+
+### Example:
+
+- **Input**: `num = 16`
+- **Output**: `True`
+  - **Explanation**: \( 4^2 = 16 \), so 16 is a perfect square.
+
+- **Input**: `num = 14`
+- **Output**: `False`
+  - **Explanation**: There is no integer \( x \) such that \( x^2 = 14 \), so 14 is not a perfect square.
+
+## Solution Code:
+
+```python
+class Solution:
+    def isPerfectSquare(self, num: int) -> bool:
+        l = 0
+        r = num + 1
+        while l + 1 != r:
+            mid = (l + r) // 2
+            if mid ** 2 == num:
+                return True
+            elif mid ** 2 > num:
+                r = mid
+            else:
+                l = mid
+        return False
+```
+
+## 题目: 单一非重复元素
+
+给定一个排序数组，其中每个元素都恰好出现两次，只有一个元素出现一次。找出这个唯一的非重复元素。
+
+### 输入:
+- 一个整数数组 `nums`，其中数组长度为奇数 `2n + 1`，并且除了一个元素外，所有元素都恰好出现两次。
+
+### 输出:
+- 返回数组中唯一出现一次的元素。
+
+### 示例:
+
+# 示例 1
+输入: nums = [1, 1, 2, 3, 3, 4, 4]
+输出: 2
+
+# 示例 2
+输入: nums = [1, 1, 2, 2, 3]
+输出: 3
+
+```py
+from typing import List
+
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
+        # 初始化左右边界，l = -1, r = 数组长度，这个数组一定是个奇数2n+1
+        l, r = -1, len(nums)
+        
+        # 当左右边界没有相邻时，继续二分查找
+        while l + 1 != r:
+            # 计算中间位置，使用(l + (r - l) // 2)防止溢出
+            mid = l + (r - l) // 2
+            
+            #是代表mid左边的是偶数对，因为是0 based 
+            #偶数对不代表左边一定是成对的
+            #右边是奇数对，但是按照道理讲,左边成对，mid 和mid+1 也应该是成对的，不然左边就有问题
+            if mid % 2 == 0:
+                # 如果mid是偶数且mid和mid+1位置的元素相等,偶数说明左边的肯定是一对的
+                if mid + 1 < len(nums) and nums[mid] == nums[mid + 1]:
+                    l = mid  # 向右边寻找
+                else:
+                    r = mid  # 否则向左边寻找
+            else:
+                # 如果mid是奇数且mid和mid-1位置的元素相等
+                if mid - 1 >= 0 and nums[mid] == nums[mid - 1]:
+                    l = mid  #向右边边寻找
+                else:
+                    r = mid  # 向左边寻找
+        #在二分查找的过程中，l 被更新为已经确定成对出现的元素，r 被更新为可能包含非重复元素的区间，而 
+        # 返回单个元素所在的位置
+        return nums[r]
+
+```
+### 解法2
+```py
+def singleNonDuplicate(self, nums: List[int]) -> int:
+        return nums[bisect_left(range(len(nums) - 1), True, key=lambda x: nums[x] != nums[x ^ 1])]
+```
+
+
+[看懂这一行代码](../有用的function或者易错.md#位运算-x--1-的详细解释和示例)
