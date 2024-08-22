@@ -536,6 +536,28 @@ from typing import List
 
 class Solution:
     def singleNonDuplicate(self, nums: List[int]) -> int:
+        l, r = -1, len(nums)
+        
+        while l + 1 != r:
+            mid = l + (r - l) // 2
+            
+            if mid % 2 == 0:
+                if mid + 1 < len(nums) and nums[mid] == nums[mid + 1]:
+                    l = mid
+                else:
+                    r = mid
+            else:
+                if mid - 1 >= 0 and nums[mid] == nums[mid - 1]:
+                    l = mid
+                else:
+                    r = mid
+        
+        return nums[r]
+
+from typing import List
+
+class Solution:
+    def singleNonDuplicate(self, nums: List[int]) -> int:
         # 初始化左右边界，l = -1, r = 数组长度，这个数组一定是个奇数2n+1
         l, r = -1, len(nums)
         
