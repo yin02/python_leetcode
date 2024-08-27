@@ -1,0 +1,13 @@
+        #相同的数子move to the last 最后一个, 且在区间内
+            while i+1 < len(nums) and nums[i] == nums[i+1]:
+                i +=1
+        # 右边的大的话（上升）且在范围的情况，因为mid+1 检查右边就行
+            if mid < len(nums) - 1 and nums[mid] < nums[mid+1]:
+        # 在范围内，左边大的话（下降） 且在范围内的情况，因为i-1
+        if mid > 0 and nums[mid] < nums[mid-1]:
+
+#旋转数组的左右边 都是跟  L比 或者nums【0】，右边就是nums【-1】
+        # 搜索左半部分
+        if nums[l] <= nums[mid]
+        # 搜索右半部分
+        if nums[mid] < nums[l]
