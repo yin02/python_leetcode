@@ -191,3 +191,49 @@ class Solution:
         # bisect_right和bisect_left等价写法
         return nums[bisect_right(range(len(nums) - 1), False, key=lambda x: nums[x] != nums[x ^ 1])]
 ```
+
+
+## dict.get() 方法的语法
+``` py
+dic = {}
+
+value = dict.get(key, default_value)
+```
+
+key：需要查找的键。
+default_value（可选）：如果键不存在时返回的默认值。默认情况下，这个参数是 None
+
+``` py
+my_dict = {'name': 'Alice', 'age': 25, 'city': 'New York'}
+
+# 存在的键
+name = my_dict.get('name')
+print(name)  # 输出: Alice
+
+# 不存在的键
+country = my_dict.get('country')
+print(country)  # 输出: None
+
+my_dict = {'name': 'Alice', 'age': 25, 'city': 'New York'}
+
+# 存在的键
+name = my_dict.get('name', 'Unknown')
+print(name)  # 输出: Alice
+
+# 不存在的键，返回默认值
+country = my_dict.get('country', 'USA')
+print(country)  # 输出: USA
+
+my_dict = {'name': 'Alice', 'age': 25, 'city': 'New York'}
+
+# 安全地获取键的值
+age = my_dict.get('age', 0)  # 如果 'age' 不存在，则返回 0
+print(age)  # 输出: 25
+
+# 如果键不存在时提供默认值
+salary = my_dict.get('salary', 0)  # 如果 'salary' 不存在，则返回 0
+print(salary)  # 输出: 0
+
+
+```
+
