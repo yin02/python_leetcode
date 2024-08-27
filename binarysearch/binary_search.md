@@ -594,3 +594,356 @@ def singleNonDuplicate(self, nums: List[int]) -> int:
 
 
 [看懂这一行代码](../有用的function或者易错.md#位运算-x--1-的详细解释和示例)
+
+## 有lower bound，就可以看看有没有 upperbound 然后想到binary search
+
+
+
+# 题目描述
+
+给定一个包裹的重量列表 `weights` 和一个指定的天数 `days`，要求在 `days` 天内将所有包裹运输完毕。需要确定一个最小的运载能力，使得可以在 `days` 天内完成所有包裹的运输。
+
+运输的规则是：
+- 每一天你只能从左到右按顺序运输包裹，不能调换包裹的顺序。
+- 在一天内，你可以选择运输一部分包裹，但不能运输超过船的最大运载能力。
+
+你需要计算出一个最小的船的运载能力，使得可以在规定天数内完成所有包裹的运输。
+
+## 输入
+
+- `weights`：一个整数列表，表示每个包裹的重量。
+- `days`：一个整数，表示规定的天数。
+
+## 输出
+
+- 返回一个整数，表示最小的船的运载能力。
+
+## 示例
+
+**输入：**
+
+```python
+class Solution:
+
+    def shipWithinDays(self, weights: List[int], days: int) -> int:
+        l,r = max(weights)-1, sum(weights)+1
+        min_cap  = r
+        def canship(cap):
+            day, curcap = 1, cap
+            for w in weights:
+                if curcap - w < 0: 
+                    day += 1
+                    curcap = cap
+                curcap -= w
+            return day <= days
+        while l+1 != r:
+            cap = (l+r)//2
+            if canship(cap):
+                r = cap
+            else:
+                l = cap
+        return r
+```
+
+<h1 style="color:red; font-size: 36px;">忘记 `l + 1` 的错误</h1> l+1 ！=r
+
+
+# 162. Find Peak Element
+
+给定一个整数数组 `nums`，找到其中的一个峰值元素，并返回其索引。数组中的元素满足以下条件：
+
+1. `nums[i]` ≠ `nums[i + 1]`，对于所有有效的 `i`。
+2. 一个峰值元素是指其值严格大于左右相邻值的元素。
+
+你可以假设 `nums[-1] = nums[n] = -∞`，即数组在边界以外的元素都视为负无穷。
+
+你的解法应该在 O(log n) 时间内完成。
+
+## 输入
+
+- `nums`：一个整数列表，表示要查找峰值的数组。
+
+## 输出
+
+- 返回一个整数，表示峰值元素的索引。
+
+### 解法描述2
+
+1. **如何向左向右边搜寻**：
+   - 左边要找下降的，右边的话找右边比较大的向右向上升的 
+
+
+```python
+class Solution:
+    def findPeakElement(self, nums: List[int]) -> int:
+        l,r = -1, len(nums)
+        for i in range(len(nums)):
+            mid = (l+r)//2
+            if mid < len(nums) -1 and nums[mid] < nums[mid+1]:
+                l= mid
+            elif mid > 0 and nums[mid] < nums[mid-1]:
+                r = mid
+            # 如果以上两种情况都不满足，说明 mid 可能是峰值，跳出循环
+            else:
+                break
+        return mid
+```
+
+## 题目：成功配对的数量
+
+给定两个整数数组 `spells` 和 `potions`，分别表示法术的力量和药水的效力。同时给定一个整数 `success`，表示成功的最低阈值。一个法术与药水的配对被认为是成功的，当且仅当 `spell * potion >= success`。你需要返回一个整数数组，表示每个法术能形成的成功配对的数量。
+
+### 示例：
+
+
+输入:
+spells = [10, 20, 30]
+potions = [1, 2, 3, 4, 5]
+success = 100
+
+输出:
+[3, 4, 5]
+
+解释:
+- 对于第一个法术 `10`，它可以与 `potions` 中 `3`，`4`，`5` 形成成功的配对。
+- 对于第二个法术 `20`，它可以与 `potions` 中 `2`，`3`，`4`，`5` 形成成功的配对。
+- 对于第三个法术 `30`，它可以与 `potions` 中 `1`，`2`，`3`，`4`，`5` 形成成功的配对。
+
+
+
+
+```py
+from typing import List
+
+class Solution:
+    def successfulPairs(self, spells: List[int], potions: List[int], success: int) -> List[int]:
+        potions.sort()  # 对potions进行排序
+        pairs = []
+        n = len(potions)
+        
+        for spell in spells:
+            l = -1  # 红边界，表示不满足条件的部分
+            r = n   # 蓝边界，表示满足条件的部分
+            while l + 1 != r:
+                m = (l + r) // 2
+                if potions[m] * spell >= success:
+                    r = m  # 缩小蓝边界
+                else: 
+                    l = m  # 扩大红边界
+            pairs.append(n - r)  # r 指向第一个满足条件的位置
+        
+        return pairs
+
+
+
+```
+
+
+### 题目：最小化最大差异
+
+给定一个整数数组 `nums` 和一个整数 `p`，任务是从 `nums` 中选择 `p` 对数对，使得每一对数对的差值的最大值尽可能的小。返回这个最小化后的最大差值。
+
+### 示例：
+
+```python
+输入:
+nums = [1, 3, 6, 19, 20]
+p = 2
+
+输出:
+2
+
+解释:
+- 选择数对 (1, 3) 和 (19, 20)，它们的差值分别是 2 和 1。最大差值为 2，这是可能的最小值。
+``` 
+
+```py
+
+class Solution:
+    def minimizeMax(self, nums: List[int], p: int) -> int:
+        
+        # 辅助函数，用于判断在给定阈值 threshold 下是否可以找到 p 对数对，
+        # 使得每一对数对的差值不超过 threshold
+        def isValid(threshold):
+            i, cnt = 0, 0  # i 是当前遍历的索引，cnt 记录符合条件的数对数量
+            while i < len(nums) - 1:
+                # 如果当前数对的差值小于或等于阈值
+                if abs(nums[i] - nums[i + 1]) <= threshold:
+                    cnt += 1  # 满足条件的数对数量加一
+                    i += 2  # 跳过下一个元素，因为已经配对
+                else:
+                    i += 1  # 如果不满足条件，继续检查下一个元素
+                if cnt == p:  # 如果已经找到了 p 对数对，返回 True
+                    return True
+            return False  # 如果遍历完所有元素后没有找到足够的数对，返回 False
+        
+        # 如果 p 为 0，则不需要任何数对，返回 0
+        if p == 0: 
+            return 0
+
+        nums.sort()  # 先对数组进行排序，以便后续的处理
+        l, r = -1, 10**9 + 1  # 初始化二分查找的左右边界
+        res = 10**9  # 初始化结果为一个较大的值
+        
+        # 使用二分查找来寻找最小的最大差值
+        while l + 1 != r:
+            m = l + (r - l) // 2  # 计算中间值
+            if isValid(m):  # 如果当前阈值 m 可以找到 p 对数对
+                res = m  # 更新结果为当前的 m
+                r = m  # 缩小搜索范围，尝试更小的阈值
+            else:
+                l = m  # 如果不能找到足够的数对，增大最小可能阈值
+        return res  # 返回最终找到的最小的最大差值
+```
+
+
+### 题目：寻找旋转排序数组中的最小值
+
+给定一个升序排序但旋转过的数组 `nums`，请你编写一个函数，返回数组中的最小值。数组中不存在重复元素。
+
+数组被旋转的意思是将数组的某一部分移到数组的另一端。例如，数组 `[0,1,2,4,5,6,7]` 可能变成 `[4,5,6,7,0,1,2]`，即将前面的 `[4,5,6,7]` 移动到了数组的末尾。
+
+### 输入描述
+
+- `nums`: 一个旋转排序的整数数组，长度范围 `[1, 5000]`，数组中的元素均为唯一的整数。
+
+### 输出描述
+
+- 返回数组中的最小值。
+
+### 示例
+
+#### 示例 1:
+
+```python
+输入: nums = [3,4,5,1,2]
+输出: 1
+解释: 原数组为 [1,2,3,4,5]，旋转后为 [3,4,5,1,2]。最小值为 1。
+```
+
+
+```py
+from typing import List
+
+class Solution:
+    def findMin(self, nums: List[int]) -> int:
+        l, r = -1, len(nums)  # 初始化左边区域和右边区域
+
+        while l + 1 != r:
+            mid = l + (r - l) // 2
+            # 判断中间值是否在左边区域
+            if nums[mid] <= nums[l]:
+                r = mid  # 看右边区域
+            else:
+                l = mid  # 看左边区域
+
+        return nums[r]  # r 即为最小元素所在的位置
+```
+
+
+
+
+
+### 题目：搜索旋转排序数组 II
+
+已知存在一个按非降序排列的整数数组 `nums` ，数组中的值可以是重复的。将数组旋转了 `k` 次（`k` 是非负整数），使得数组变为 `[nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]]`，例如，数组 `[0,1,2,4,4,4,5,6,6,7]` 可能变为 `[4,5,6,6,7,0,1,2,4,4]`。
+
+给你这个旋转后的数组 `nums` 和一个整数 `target`，请你判断 `target` 是否存在于数组中。如果存在，返回 `true`；否则，返回 `false`。
+
+### 输入描述
+
+- `nums`: 一个经过旋转的整数数组，长度范围为 `[1, 5000]`，其中的元素可以是重复的整数。
+- `target`: 一个整数，表示需要查找的目标值。
+
+### 输出描述
+
+- 如果在数组 `nums` 中找到目标值 `target`，返回 `true`；否则返回 `false`。
+
+### 示例
+
+#### 示例 1:
+
+```python
+输入: nums = [2,5,6,0,0,1,2], target = 0
+输出: true
+```
+### 思路
+
+这段代码通过检查 `target` 的值与数组第一个元素 `nums[0]` 之间的关系，将问题分为两种情况来处理：
+
+1. **目标值大于等于数组的第一个元素**：
+   - 如果 `target >= nums[0]`，那么目标值可能出现在数组的左半部分（从数组的开始到旋转点之间）。代码通过从左到右遍历数组来查找目标值。
+   - 当遍历到第一个大于 `target` 的元素时，可以立即停止，因为目标值不可能出现在后续元素中。
+
+2. **目标值小于数组的第一个元素**：
+   - 如果 `target < nums[0]`，那么目标值可能出现在数组的右半部分（从旋转点到数组的末尾之间）。代码通过从右到左遍历数组来查找目标值。
+   - 当遍历到第一个小于 `target` 的元素时，可以立即停止，因为目标值不可能出现在前面的元素中。
+
+### 代码实现
+
+```python
+from typing import List
+
+class Solution:
+    def search(self, nums: List[int], target: int) -> bool:
+        if target >= nums[0]:
+            # 如果目标值大于等于数组的第一个元素，可能在数组的左半部分
+            for i in range(len(nums)):
+                if nums[i] == target:
+                    return True
+                # 如果当前元素大于目标值，目标值不可能出现在后面
+                if nums[i] > target:
+                    return False
+        else:
+            # 如果目标值小于数组的第一个元素，可能在数组的右半部分
+            for i in range(len(nums) - 1, -1, -1):
+                if nums[i] == target:
+                    return True
+                # 如果当前元素小于目标值，目标值不可能出现在前面
+                if nums[i] < target:
+                    return False
+        return False
+```
+
+``` py
+from typing import List
+
+class Solution:
+    def search(self, nums: List[int], target: int) -> bool:
+        # 如果数组的首尾元素相等且数组长度大于1，则删除数组开头的元素
+        # 目的是为了去掉重复的元素，避免干扰二分查找的逻辑
+        while nums[0] == nums[-1] and len(nums) > 1:
+            del nums[0]
+        
+        # 初始化红蓝边界
+        left = -1  # 红色区域的右边界，表示到目前为止未找到目标值的区域
+        right = len(nums)  # 蓝色区域的左边界，表示可能包含目标值的区域
+        
+        # 开始二分查找的过程，循环直到红蓝边界相遇
+        while left + 1 != right:
+            mid = (left + right) // 2  # 计算中间位置
+            
+            # 如果中间值等于目标值，直接返回 True
+            if nums[mid] == target:
+                return True
+            
+            # 如果 mid 处的值大于或等于 nums[0]，说明 mid 处于左半部分
+            if nums[mid] >= nums[0]:
+                # 如果目标值在左半部分范围内，缩小蓝色区域,向左边搜索
+                if nums[0] <= target < nums[mid]:
+                    right = mid
+                else:
+                    # 否则，目标值在右半部分，扩大红色区域，向右边搜索
+                    left = mid
+            else:
+                # 如果 mid 处的值小于 nums[0]，说明 mid 处于右半部分
+                # 如果目标值在右半部分范围内，扩大红色区域，向右边搜索
+                if nums[mid] < target <= nums[-1]:
+                    left = mid
+                else:
+                    # 否则，目标值在左半部分，缩小蓝色区域
+                    right = mid
+        
+        # 如果二分查找结束后仍未找到目标值，返回 False
+        return False
+```
