@@ -820,8 +820,8 @@ class Solution:
 输出: 1
 解释: 原数组为 [1,2,3,4,5]，旋转后为 [3,4,5,1,2]。最小值为 1。
 ```
-因为旋转点前后都是有序的，如果说这个中间值比最左边大，说明中间在旋转点的左边有序这块，我们要向右寻找
-反之，中途一定有一个点是旋转点，被旋转的一定比右边大，所以就要向左寻找
+
+
 ```py
 from typing import List
 
@@ -947,3 +947,140 @@ class Solution:
         # 如果二分查找结束后仍未找到目标值，返回 False
         return False
 ```
+
+### 题目：在排序数组中查找元素的第一个和最后一个位置
+
+给定一个按照升序排列的整数数组 `nums` 和一个目标值 `target`，找出给定目标值在数组中的第一个和最后一个位置。
+
+如果数组中不存在目标值 `target`，返回 `[-1, -1]`。
+
+### 输入描述
+
+- `nums`: 一个按升序排列的整数数组，长度范围为 `[0, 10^5]`。
+- `target`: 一个整数，表示需要查找的目标值。
+
+### 输出描述
+
+- 返回一个长度为 2 的列表 `[leftIdx, rightIdx]`，表示目标值在数组中的第一个和最后一个位置。
+- 如果目标值不存在于数组中，返回 `[-1, -1]`。
+
+### 示例
+
+#### 示例 1:
+
+```python
+输入: nums = [5,7,7,8,8,10], target = 8
+输出: [3, 4]
+```
+```py
+from typing import List
+
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        # 查找目标值在数组中的第一个位置
+        def binarysearchLeft(nums, target):
+            l = -1
+            r = len(nums)
+            while l + 1 != r:
+                mid = l + (r - l) // 2
+                if nums[mid] >= target:
+                    r = mid  # 将蓝色区域收缩到左侧
+                else:
+                    l = mid  # 将红色区域扩大到右侧
+            return r
+        
+        # 查找目标值在数组中的最后一个位置
+        def binarysearchright(nums, target):
+            l = -1
+            r = len(nums)
+            while l + 1 != r:
+                mid = l + (r - l) // 2
+                if nums[mid] <= target:
+                    l = mid  # 将红色区域扩大到左侧
+                else:
+                    r = mid  # 将蓝色区域收缩到右侧
+            return l
+        
+        leftIdx = binarysearchLeft(nums, target)
+        rightIdx = binarysearchright(nums, target)
+
+        # 判断找到的索引是否在有效范围内，并且值是否与目标值相等
+        if leftIdx <= rightIdx and rightIdx < len(nums) and nums[leftIdx] == target and nums[rightIdx] == target:
+            return [leftIdx, rightIdx]
+        
+        return [-1, -1]
+```
+
+
+## 题目：最大化移除字符使得目标子序列仍然存在
+
+### 描述
+
+给定一个字符串 `s` 和一个字符串 `p`，再给定一个整数数组 `removable`，其中 `removable[i]` 表示可以从 `s` 中移除的字符索引。
+
+在不改变字符相对顺序的前提下，请你找出可以从 `s` 中移除的最大字符数 `k`，使得 `p` 仍然是 `s` 的子序列。返回 `k`。
+
+### 输入
+
+- `s`: 一个由小写字母组成的字符串。
+- `p`: 一个由小写字母组成的字符串，是 `s` 的潜在子序列。
+- `removable`: 一个整数数组，表示 `s` 中可移除字符的索引。
+
+### 输出
+
+- 返回 `k`，即可以移除的最大字符数，使得 `p` 仍然是 `s` 的子序列。
+
+### 示例
+
+#### 示例 1:
+
+```python
+输入:
+s = "abcacb"
+p = "ab"
+removable = [3, 1, 0]
+
+输出:
+2
+
+解释:
+移除索引 [3,1] 的字符后，"acb" 仍然包含 "ab" 作为子序列。
+
+
+removable[i] 是一个索引，表示我们要修改 s_list 中的某个字符的位置。
+s_list 是字符串 s 的列表表示（因为字符串在 Python 中是不可变的，所以需要转换为列表以便修改）。
+s_list[removable[i]] 就是我们需要修改的具体字符。
+```
+
+```py
+from typing import List
+
+class Solution:
+    def check(self, s: str, p: str, removable: List[int], k: int) -> bool:
+        # 将字符串转换为列表以便修改
+        s_list = list(s)
+        # 将可移除的字符标记为非字母（在这里模拟成大写，使用较大的 ASCII 值）
+        for i in range(k):
+            s_list[removable[i]] = chr(ord(s_list[removable[i]]) - ord("a"))  # 将字符转换为“非字母”状态
+        
+        j = 0
+        # 遍历修改后的字符串，检查是否能匹配 p
+        for i in range(len(s_list)):
+            if s_list[i].islower() and s_list[i] == p[j]:
+                j += 1
+                if j == len(p):
+                    return True
+        return False
+
+    def maximumRemovals(self, s: str, p: str, removable: List[int]) -> int:
+        n = len(removable)  # 获取 removable 的长度
+        l, r = -1, n + 1
+        while l + 1 != r:
+            mid = (l + r) // 2
+            if self.check(s, p, removable, mid):
+                l = mid
+            else:
+                r = mid
+        return l
+```
+
