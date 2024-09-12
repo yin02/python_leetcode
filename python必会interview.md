@@ -222,4 +222,130 @@ if transactions > 100:
 transactions = min(100, transactions)
 
 ```
+## Resizable List
+`append()`: Adds an element to the end of the list.
+`pop()`: Removes and returns the last element of the list
+`insert()`: Inserts an element at a specified index in the list.
+```py
+my_list = [1, 2, 3]
 
+my_list.append(4) # [1, 2, 3, 4]
+my_list.append(5) # [1, 2, 3, 4, 5]
+
+my_list.pop() # [1, 2, 3, 4]
+
+my_list.insert(1, 3) # [1, 3, 2, 3, 4]
+```
+
+### small pratice oop
+
+`append_elements(arr1: List[int], arr2: List[int]) -> List[int]. `
+It should append the elements of arr2 to the end of arr1 and return the resulting list.
+
+`pop_n(arr: List[int], n: int) -> List[int].`
+ It should remove the last n elements from the list and return the resulting list. If n is greater than the length of the list, it should return an empty list.
+
+`insert_at(arr: List[int], index: int, element: int) -> List[int]. `
+It should insert the element at the specified index in the list and return the resu
+```py
+from typing import List
+
+
+def append_elements(arr1: List[int], arr2: List[int]) -> List[int]:
+    for elements in arr2:
+        arr1.append(arr2)
+    return arr1
+
+
+
+def pop_n(arr: List[int], n: int) -> List[int]:
+    while n >0 and arr:
+        arr.pop()
+        n-=1
+    return arr
+
+
+def insert_at(arr: List[int], index: int, element: int) -> List[int]:
+    if index < 0 or index >= len(arr):
+        arr.append(element)
+    else:
+        arr.insert(index,element)
+    return arr
+```
+
+### Time Complexity of Common List Operations
+
+**append()**
+- Time complexity: O(1)
+
+**pop()**
+- Time complexity: O(1)
+
+**insert()**
+- Time complexity: O(n)
+  - Where `n` is the number of elements in the list.
+
+
+
+`index()`: Returns the index of the first occurrence of a specified element in the list.
+If the element is not in the list, we will get an ValueError.
+`remove()`: Removes the first occurrence of a specified element from the list.
+`extend()`: Adds the elements of another list to the end of the list.
+```py
+my_list = [1, 3, 2, 3]
+
+my_list.index(3) # 1
+
+my_list.remove(3) # [1, 2, 3]
+
+my_list.extend([4, 5]) # [1, 2, 3, 4, 5]
+```
+If we want to check if an element is in a list, we can use the in operator:
+
+```py
+my_list = [1, 2, 3]
+
+if 3 in my_list:
+    print("3 is in the list")
+```
+`append_elements(arr1: List[int], arr2: List[int]) -> List[int]`. It should append the elements of arr2 to the end of arr1 and return the resulting list. Yes, this is the same function from the previous lesson.
+`remove_elements(arr1: List[int], arr2: List[int]) -> List[int]`. It should remove all elements of arr2 from arr1 and return the resulting list.
+
+```py
+
+def append_elements(arr1: List[int], arr2: List[int]) -> List[int]:
+    arr1.extend(arr2)
+    return arr1
+  
+
+def remove_elements(arr1: List[int], arr2: List[int]) -> List[int]:
+    for number in arr2:
+        if number in arr1:
+            arr1.remove(number)
+    return arr1
+
+
+```
+
+### list contact
+```py
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+
+result = list1 + list2 # [1, 2, 3, 4, 5, 6]
+```
+
+
+### List Initialization
+
+f we want to create an empty list of a specific size, this is the easiest way to do it in Python
+```py
+my_list = [0] * 5
+```
+
+The above code will create a list of 5 zeros. It might seem strange to multiply a list by a number, but this is the standard way to create a list of a specific size in Python. We could have replaced the 0 with any other value.
+```py
+my_list = [1] * 3
+
+```
+`create_list_with_value(size: int, index: int, value: int) -> List[int]` which should create and return a list of length size. All values in the list should be 0, except for the value at index index, which should be the parameter value.
