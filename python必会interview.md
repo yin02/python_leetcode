@@ -253,7 +253,7 @@ from typing import List
 
 def append_elements(arr1: List[int], arr2: List[int]) -> List[int]:
     for elements in arr2:
-        arr1.append(arr2)
+        arr1.append(elements)
     return arr1
 
 
