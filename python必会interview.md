@@ -270,6 +270,7 @@ def insert_at(arr: List[int], index: int, element: int) -> List[int]:
         arr.append(element)
     else:
         arr.insert(index,element)
+#因为负数索引会导致数组从末尾开始进行插入/删除操作
     return arr
 ```
 
