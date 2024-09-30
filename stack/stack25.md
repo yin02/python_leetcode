@@ -345,6 +345,7 @@ You are given two distinct 0-indexed integer arrays `nums1` and `nums2`, where `
 For each `0 <= i < nums1.length`, find the index `j` such that `nums1[i] == nums2[j]` and determine the next greater element of `nums2[j]` in `nums2`. If there is no next greater element, the answer is `-1`.
 
 Return an array `ans` of length `nums1.length` such that `ans[i]` is the next greater element as described above.
+这个题目是根据nums1来锁定答案的不是nums2不要搞错了！！！
 
 ## Example 1:
 
@@ -468,3 +469,87 @@ def removeStars(self,s):
     return "".join(stack)
         
 ```
+
+
+
+### 946. Validate Stack Sequences
+
+Given two integer arrays pushed and popped each with distinct values, return true if this could have been the result of a sequence of push and pop operations on an initially empty stack, or false otherwise.
+
+Example 1:
+
+Input: pushed = [1,2,3,4,5], popped = [4,5,3,2,1]
+Output: true
+Explanation: We might do the following sequence:
+push(1), push(2), push(3), push(4),
+pop() -> 4,
+push(5),
+pop() -> 5, pop() -> 3, pop() -> 2, pop() -> 1
+
+```py
+class Solution:
+    def validateStackSequences(self, pushed: List[int], popped: List[int]) -> bool:
+        stack = []
+        i = 0
+        for n in pushed:
+            stack.append(n)
+            while i < len(popped) and stack and popped[i] == stack[-1]:
+                stack.pop()
+                i+=1
+        return not stack    
+
+```
+
+## 22. Generate Parentheses
+Given n pairs of parentheses, write a function to generate all combinations of well-formed parentheses.
+
+
+```py
+class Solution:
+    def generateParenthesis(self, n: int) -> List[str]:
+        #only add open parenthesis if open < n
+        #only add closing parenthese if closed <open
+        #valid if open == closed ==n
+        stack = []
+        res = []
+        def backtrack(openN,closedN):
+            if openN == closedN ==n:
+                res.append("".join(stack))
+                return 
+            if openN < n:
+                stack.append("(")
+                backtrack(openN+1,closedN)
+                stack.pop()
+            if closedN < openN:
+                stack.appe nd(")")
+                backtrack(openN,closedN+1)
+                stack.pop()
+        backtrack(0,0)
+
+        return res
+```
+
+
+## Daily Temperatures
+You are given an array of integers temperatures where temperatures[i] represents the daily temperatures on the ith day.
+
+Return an array result where result[i] is the number of days after the ith day before a warmer temperature appears on a future day. If there is no day in the future where a warmer temperature will appear for the ith day, set result[i] to 0 instead.
+
+
+
+![alt text](image.png)
+
+```py
+class Solution:
+    def dailyTemperatures(self, temperatures: List[int]) -> List[int]:
+        # momenton decreasing temperatures
+        stack = []# [temp,index]
+        res = [0]*len(temperatures)
+        for i,n in enumerate(temperatures):
+            while stack and stack[-1][0]<n:
+                stackN, stackInd = stack.pop()
+                # 距离差就是右边的个数
+                res[stackInd] = i - stackInd
+            stack.append((n,i))
+        return res
+``
