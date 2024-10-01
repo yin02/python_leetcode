@@ -552,4 +552,197 @@ class Solution:
                 res[stackInd] = i - stackInd
             stack.append((n,i))
         return res
-``
+```
+
+
+
+## Online Stock Span
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Write a class `StockSpanner` which collects prices of stocks and returns the span of stocks' prices for the current day. The span of a stock's price is defined as the maximum number of consecutive days (starting from today and going backwards) for which the price of the stock was less than or equal to today's price.  
+**Example:**
+```python
+# Input: prices = [100, 80, 60, 70, 60, 75, 85]
+# Output: [1, 1, 1, 2, 1, 4, 6]
+```
+momontic decreasing 适合，因为decreasing没有变化
+![alt text](image-1.png)
+
+```py
+class StockSpanner:
+  def __init__(self):
+    stack = []
+  def next(self,price):
+    # stack ＝(price,span)
+    #default is 1
+    # evey value neet to be add to the stack
+    # pop when bigger than previous,后面的数其实不用担心，比这个还大，那么前面的span都要加上
+    span = 1
+    while stack and stack[-1][0]<= pirce:
+      span += self.stack[-1][1]
+      self.stack.pop()
+    # push current 
+    self.stack.append((price,span))
+    return span
+```
+
+
+
+
+
+
+## Car Fleet
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** N cars are going to the same destination along a one-lane road. The destination is `target` miles away. Each car i has a speed `speed[i]` (in miles per hour), and initial position `position[i]` miles towards the target. Determine how many car fleets will arrive at the destination.  
+**Example:**
+```python
+# Input: position = [10, 8, 0, 5, 3], speed = [2, 4, 1, 1, 3], target = 12
+# Output: 3 
+```
+### 首先，反向sort这个position，直接考虑时间，如果position小的用的时间更少说明有一个car feet，stack 
+### stack储存时间，因为大家都合并到一起了，算最终distinct的几个到达终点的就行，就是最后的car fleet
+
+```py
+class Solution:
+    def carFleet(self, target: int, position: List[int], speed: List[int]) -> int:
+        pair = [(p, s) for p, s in zip(position, speed)]
+        pair.sort(reverse=True)
+        stack = []# to store the time
+        for p, s in pair:  # Reverse Sorted Order
+            stack.append((target - p) / s)
+              # 这边注意操作的时候先将当前的挤入stack了，然后才计算的时间
+            # if 当前车的时间，比前一辆车的时间少，那么车会fleet
+            if len(stack) >= 2 and stack[-1] <= stack[-2]:
+                stack.pop()
+        return len(stack)
+```
+
+
+
+## Simplify Path
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given a string representing an absolute path for a file (Unix-style), simplify it. The path may contain `.` (the current directory), `..` (the parent directory), and other directory names.  
+**Example:**
+```python
+# Input: path = "/a/./b/../../c/"
+# Output: "/c"
+```
+stack 只有这个字母，在开头的时候加一个slash，
+![alt text](image-2.png)
+## Decode String
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given an encoded string, return its decoded string. The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times.  
+**Example:**
+```python
+# Input: s = "3[a2[c]]"
+# Output: "accaccacc"
+```
+![
+](image-3.png)
+
+### stack,not closing keep appending, 2closed, get the string, and then value,added to the stack repeat
+### convert the final stack
+
+
+```py
+class Solution:
+    def decodeString(self, s: str) -> str:
+        stack = []
+
+        for char in s:
+            if char is not "]":
+                stack.append(char)
+            else:
+                sub_str = ""
+                while stack[-1] is not "[":
+                    sub_str = stack.pop() + sub_str
+                stack.pop() #pop the open parethesis
+
+                multiplier = ""
+                while stack and stack[-1].isdigit():
+                    multiplier = stack.pop() + multiplier
+
+                stack.append(int(multiplier) * sub_str)
+
+        return "".join(stack)
+
+…
+
+```
+
+## Remove K Digits
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given a string num representing a non-negative integer, and an integer k, return the smallest possible integer after removing k digits from num.  
+**Example:**
+```python
+# Input: num = "1432219", k = 3
+# Output: "1219"
+```
+
+## Remove All Adjacent Duplicates In String II
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given a string s, remove all adjacent duplicates `k` times. If you can’t remove any more, return the final string.  
+**Example:**
+```python
+# Input: s = "deeedbbcccbdaa", k = 3
+# Output: "aa"
+```
+
+## 132 Pattern
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given an array of integers, find if there is a 132 pattern in the array. A 132 pattern is a subsequence of three integers `i`, `j`, and `k` such that `i < j < k` and `nums[i] < nums[k] < nums[j]`.  
+**Example:**
+```python
+# Input: nums = [1, 2, 3, 4]
+# Output: False
+```
+
+## Flatten Nested List Iterator
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Implement an iterator to flatten a nested list. Each element in the nested list can be an integer or a list of integers.  
+**Example:**
+```python
+# Input: nestedList = [[1,1],2,[1,1]]
+# Output: [1, 1, 2, 1, 1]
+```
+
+## Sum of Subarray Minimums
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given an array of integers, return the sum of the minimums of all subarrays.  
+**Example:**
+```python
+# Input: arr = [3, 1, 2, 4]
+# Output: 17
+```
+
+## Maximum Frequency Stack
+**Difficulty:** Hard  
+**Language:** Python  
+**Description:** Design a stack that supports the following operations: `push`, `pop`, and `peek`. The `pop` method should return the most frequently occurring element. If there is a tie, it should return the element that was pushed last.  
+**Example:**
+```python
+# Input: ["push", "push", "push", "push", "pop", "push", "pop", "pop"]
+#         [5, 7, 5, 7, [], 4, [], []]
+# Output: 7
+```
+
+## Largest Rectangle In Histogram
+**Difficulty:** Medium  
+**Language:** Python  
+**Description:** Given an array of integers representing the height of a histogram, return the area of the largest rectangle that can be formed in the histogram.  
+**Example:**
+```python
+# Input: heights = [2, 1, 5, 6, 2, 3]
+# Output: 10
+```
+```
+
+Feel free to modify any of the examples or descriptions as needed!
