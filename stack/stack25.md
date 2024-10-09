@@ -682,6 +682,64 @@ class Solution:
 # Input: num = "1432219", k = 3
 # Output: "1219"
 ```
+![alt text](image-4.png)
+我们可以从两个角度来解释为什么**每次移除一个数字是最优解**，以及为什么在遍历结束后如果还没有移除完 `k` 个数字，可以直接**从末尾移除** `k` 个数字是最优解**。
+
+### 1. 为什么每次移除一个是最优解？
+这个思路基于 **贪心算法**，我们在每一步都尝试找到当前能够做出的局部最优选择，从而达到最终的全局最优解。
+
+#### 核心原则：
+- 我们希望最终的结果尽可能小。
+- 我们从左到右扫描数字，**每次移除栈中比当前数字大的数字**，这样我们确保当前处理的数字尽可能地小，使得未来的数更有可能是一个较小的结果。
+
+#### 具体的贪心策略：
+- 在遍历数字时，如果栈顶的数字大于当前的数字，并且还可以移除 `k` 个数字，那么移除栈顶的数字会让剩余的数更小。
+- 我们每次只移除一个数字，目的是让每次的选择都是局部最优。如果我们一次移除多个数字，就有可能误移除不该删除的数字，从而无法得到最优解。
+
+**例子**：
+
+假设 `num = "4321"`，`k = 2`，我们需要移除 2 个数字。
+
+- 开始时，我们有 `'4'`，然后遇到 `'3'`，按照贪心算法，`'4'` 比 `'3'` 大，因此我们移除 `'4'`。
+- 接着，栈中有 `'3'`，遇到 `'2'`，`'3'` 又比 `'2'` 大，于是我们移除 `'3'`。
+- 最终剩下 `'21'`。
+
+如果我们一次性移除多个数字，而不逐步判断，可能会误删我们希望保留的数字，导致不是最优解。
+
+```
+移除大的好像更好，移除左边的更好，也就是左边的大的被移除最好
+所以stack 要长成 monotonic increasing是最好的 
+如果我们看见一个比stack顶部小的，就pop前面的出去，加上这个小的（这边要循环要个while）直到成为 比stack里面大的
+形成monotonic increasing，也要一个k来计数，k必须要满足，每次只能移除一个
+最后k不管剩下多少，都要把剩下加上
+
+建立一个单调递增的stack， 小的话就pop那个最大的
+```
+```py
+class Solution:
+    def removeKdigits(self, num: str, k: int) -> str:
+        stack = []  # 用于存储处理后的数字
+        
+        # 遍历数字字符串的每一位
+        for i in num:
+            # 当栈顶的数字大于当前数字且我们仍然可以移除数字时
+            while stack and stack[-1] > i and k > 0:
+                k -= 1  # 减少可以移除的次数
+                stack.pop()  # 移除栈顶元素
+            
+            # 如果栈不为空或者当前数字不是'0'（避免前导零）
+            if stack or i != "0":
+                stack.append(i)  # 将当前数字添加到栈中
+        
+        # 如果还有多余的 k，移除栈中的最后 k 个数字
+        if k:
+            stack = stack[:-k]
+        
+        # 如果栈为空，返回'0'，否则将栈中的元素合并为字符串返回
+        return ''.join(stack) or '0'
+
+        
+```
 
 ## Remove All Adjacent Duplicates In String II
 **Difficulty:** Medium  
@@ -692,16 +750,63 @@ class Solution:
 # Input: s = "deeedbbcccbdaa", k = 3
 # Output: "aa"
 ```
+![alt text](image-5.png)
+因为题目是相邻且相等，所以只要考虑栈顶就行！！！
+```py
+
+class Solution:
+    def removeDuplicates(self, s: str, k: int) -> str:
+        stack = []  # [char, count]
+
+        for c in s:
+            if stack and stack[-1][0] == c:
+                stack[-1][1] += 1
+            else:
+                stack.append([c, 1])
+
+            if stack[-1][1] == k:
+                stack.pop()
+
+        res = ""
+        for char, count in stack:
+            res += char * count
+
+        return res
+
+```
 
 ## 132 Pattern
 **Difficulty:** Medium  
 **Language:** Python  
 **Description:** Given an array of integers, find if there is a 132 pattern in the array. A 132 pattern is a subsequence of three integers `i`, `j`, and `k` such that `i < j < k` and `nums[i] < nums[k] < nums[j]`.  
 **Example:**
+
 ```python
 # Input: nums = [1, 2, 3, 4]
 # Output: False
 ```
+![alt text](image-6.png)
+
+```py
+class Solution:
+    def find132pattern(self, nums: List[int]) -> bool:
+        stack = []
+        curMin = nums[0]
+        for n in nums:
+            # stack ,mono-decreasing stack , so pop the big
+            while stack and stack[-1][0] < n:
+                stack.pop()
+            # 如果, decreasing, 但是比维护的 左边最小大，
+            if stack and stack[-1][0] > n and stack[-1][1] < n:
+                return True
+            stack.append([n,curMin])
+            curMin = min(n,curMin)
+        
+
+        return False
+```
+
+
 
 ## Flatten Nested List Iterator
 **Difficulty:** Medium  
@@ -743,6 +848,12 @@ class Solution:
 # Input: heights = [2, 1, 5, 6, 2, 3]
 # Output: 10
 ```
-```
 
-Feel free to modify any of the examples or descriptions as needed!
+
+
+
+
+
+
+
+[stack继续刷题单](https://leetcode.cn/circle/discuss/9oZFK9/)
