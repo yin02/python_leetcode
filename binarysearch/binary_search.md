@@ -309,6 +309,39 @@ def findMinimumTripsByTikRouter(packet_sizes):
     return trips  # 返回最少传输次数
 ```
 
+虽然很傻但是可以用二分法
+```py
+def findMinimumTripsByTikRouter(packet_sizes):
+    packet_sizes.sort(reverse=True)  # 从大到小排序
+
+    left = 0  # 不可能完成任务的边界
+    right = len(packet_sizes) + 1  # 最多的传输次数加1，蓝色边界
+
+    # 二分查找
+    while left + 1 < right:
+        mid = (left + right) // 2
+        trips = 0
+        l = 0
+        r = len(packet_sizes) - 1
+        
+        # 检查是否可以在 mid 次传输内完成任务
+        while l <= r:
+            if packet_sizes[l] + packet_sizes[r] <= 3.00:
+                r -= 1  # 尝试将最大和最小的数据包组合
+            l += 1  # 每次传输至少需要传一个包
+            trips += 1
+            
+            if trips > mid:  # 如果超过了 mid 次传输，无法完成
+                break
+        
+        if trips > mid:  # 当前 mid 次传输不行，需要更多次
+            left = mid
+        else:  # 当前 mid 次传输可以完成，尝试减少次数
+            right = mid
+
+    return right  # 返回最少的传输次数
+```
+
 ### 解释：
 1. **排序步骤**：先将数据包按大小从大到小排序，方便后续每次都优先选择最大的包处理。
 2. **双指针法**：用 `left` 指向最大的包，`right` 指向最小的包，检查能否组合在一起。如果可以，说明在一个传输中可以传送两个包，否则仅传输一个大包。每次传输后调整指针。
