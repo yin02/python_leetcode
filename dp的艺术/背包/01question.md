@@ -237,7 +237,7 @@ def solution(nums, target):
     f[0] = 1
     for x in nums:
         for j in range(target,x-1,-1):
-        f[j] = f[j]+f[j-x]
+            f[j] = f[j]+f[j-x]
     return f[target]
 
 ```
