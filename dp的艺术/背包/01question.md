@@ -223,7 +223,24 @@ Explanation: There are 5 ways to assign symbols to make the sum of nums be targe
 +1 + 1 + 1 - 1 + 1 = 3
 +1 + 1 + 1 + 1 - 1 = 3
 ```
+你要写的标准御用答案
+```py
+def solution(nums, target):
+    target += sum
+    target//=2
+    if target == 0:
+        return 1 if sum(nums) ==0 else 0
+    n = len(nums)
 
+    f = [0] * (target+1)
+
+    f[0] = 1
+    for x in nums:
+        for j in range(target,x-1,-1):
+        f[j] = f[j]+f[j-x]
+    return f[target]
+
+```
 
 
 
