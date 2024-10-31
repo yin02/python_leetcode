@@ -37,7 +37,8 @@ Explanation: It can be shown that nums has no subsequence that sums up to 3.
 - `1 <= nums.length <= 1000`
 - `1 <= nums[i] <= 1000`
 - `1 <= target <= 1000`
-### 如何判断01背包
+### 如何判断01背包，01背包就是，容量和重量合法后决定价值
+
 #### 目标: 找到一个子序列，使得它们的和不超过给定的 target。这实际上是一个容量限制问题，类似于在背包中放入物品以达到特定的和。
 
 
@@ -54,18 +55,20 @@ Explanation: It can be shown that nums has no subsequence that sums up to 3.
 
 ```py
 class Solution:
-    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:
+    def lengthOfLongestSubsequence(self, nums: List[int], target: int) -> int:#如果把 target 看作“背包”的容量，那么 x 相当于每次添加到“背包”里的物品的“重量”
         # f[j]represents max value of substring given target
         # x is the current value
         # f[j] = max(f[j],f[j-x]+1) for state transfer
         f = [0] + [-inf] * target
         s = 0 # s is the possible maxium number which smaller than target
         for x in nums:
-                s = min(target,s+x)
-                for j in range(s,nums-1,-1):#所以j的话，你目的是更新状态，是要么更新所有包括target，要么是比target小的所有和的状态
-                    f[j] = max(f[j],f[j-x]+1)
-        return f[target] if f[target] >0 else -1
-
+            s = min(s + x, target)
+            for j in range(s, x - 1, -1):# 剩余空间
+                # f[j] = max(f[j], f[j - x] + 1)
+                # 手写 max 效率更高
+                if f[j] < f[j - x] + 1:
+                    f[j] = f[j - x] + 1
+        return f[-1] if f[-1] > 0 else -1
 
 ```
 
@@ -163,14 +166,14 @@ class Solution:
         # could or not,恰好装满 的01
         #j is accumlator? == sum//2
         @cache
-        def dfs(i,j):
-            if i <0:
-                return j ==0
-            # legal j still got space, previous choose, not choose
+        def dfs(i,j):# 空间index i， accumlator j
+            if i <0:#如果所有结束
+                return j ==0 #是不是正好和为0，因为要被每个数字-
+            # legal j still got space, i-1 state 到i state choose, not choose
             return j >= nums[i] and dfs(i-1,j-nums[i]) or dfs(i-1,j)
 
         s = sum(nums)
-        # s is even
+        # s is even，不然不可以分成两堆是必然，是否合法能跑到最后
         return s %2 == 0 and dfs(len(nums)-1,s//2)
 
 

@@ -717,7 +717,7 @@ def singleNonDuplicate(self, nums: List[int]) -> int:
 ```
 
 
-[看懂这一行代码](../有用的function或者易错.md#位运算-x--1-的详细解释和示例)
+[看懂这一行代码](../vo面试问题/有用的function或者易错.md#位运算-x--1-的详细解释和示例)
 
 ## 有lower bound，就可以看看有没有 upperbound 然后想到binary search
 
