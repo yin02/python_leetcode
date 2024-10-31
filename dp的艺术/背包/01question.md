@@ -403,3 +403,57 @@ for i, x in enumerate(nums):
 
 return f[n % 2][target]
 ```
+
+
+
+# [2787. Ways to Express an Integer as Sum of Powers](https://leetcode.com/problems/ways-to-express-an-integer-as-sum-of-powers/description/)
+
+Given two **positive**  integers `n` and `x`.
+
+Return the number of ways `n` can be expressed as the sum of the `x^th` power of **unique**  positive integers, in other words, the number of sets of unique integers `[n<sub>1</sub>, n<sub>2</sub>, ..., n<sub>k</sub>]` where `n = n<sub>1</sub>^x + n<sub>2</sub>^x + ... + n<sub>k</sub>^x`.
+
+Since the result can be very large, return it modulo `10^9 + 7`.
+
+For example, if `n = 160` and `x = 3`, one way to express `n` is `n = 2^3 + 3^3 + 5^3`.
+
+**Example 1:** 
+
+```
+Input: n = 10, x = 2
+Output: 1
+Explanation: We can express n as the following: n = 3^2 + 1^2 = 10.
+It can be shown that it is the only way to express 10 as the sum of the 2^nd power of unique integers.
+```
+
+**Example 2:** 
+
+```
+Input: n = 4, x = 1
+Output: 2
+Explanation: We can express n in the following ways:
+- n = 4^1 = 4.
+- n = 3^1 + 1^1 = 4.
+```
+
+**Constraints:** 
+
+- `1 <= n <= 300`
+- `1 <= x <= 5`
+
+```py
+MX_N, MX_X = 300, 5
+#f[x][0] = 1，表示用任何 x 次方的数来表示和为 0 的方式只有 1 种（即什么都不选）
+f = [[1] + [0] * MX_N for _ in range(MX_X)]#[1] + [0] * MX_N 是一个整体，它创建了一个长度为 MX_N + 1 的列表，前面是横，然后纵range
+for x in range(MX_X):
+    for i in count(1):
+        v = i ** (x + 1)
+        if v > MX_N:
+            break
+        for s in range(MX_N, v - 1, -1):
+            f[x][s] += f[x][s - v]#其中 f[x][s] 表示使用 x+1 次方的数字表示 s 的方式数量，而 v 是某个数字的 x + 1 次方
+
+class Solution:
+    def numberOfWays(self, n: int, x: int) -> int:
+        return f[x - 1][n] % 1_000_000_007
+
+```
