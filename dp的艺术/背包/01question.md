@@ -231,16 +231,46 @@ Explanation: There are 5 ways to assign symbols to make the sum of nums be targe
 def solution(nums, target):
     target += sum
     target//=2
+    # Early return if target is 0
     if target == 0:
         return 1 if sum(nums) ==0 else 0
     n = len(nums)
 
     f = [0] * (target+1)
 
-    f[0] = 1
+    f[0] = 1#要收缩到0
     for x in nums:
         for j in range(target,x-1,-1):
-            f[j] = f[j]+f[j-x]
+            f[j] = f[j]+f[j-x]#等价于 f[j] += f[j - x],不选或者选上
+            #j-x是表示和的核心
+    return f[target]
+
+```
+
+
+```py
+    total_sum = sum(nums)
+    # Adjust target based on the sum
+    target += total_sum
+    # If target is not even, it's not possible to split into two equal sums
+    if target % 2 != 0:
+        return 0
+    target //= 2
+
+    # Early return if target is 0
+    if target == 0:
+        return 1 if total_sum == 0 else 0
+    
+    n = len(nums)
+    # Initialize the dp array with zeros
+    f = [0] * (target + 1)
+    f[0] = 1
+
+    # Iterate over each number in nums
+    for x in nums:
+        for j in range(target, x - 1, -1):
+            f[j] += f[j - x]
+    
     return f[target]
 
 ```
