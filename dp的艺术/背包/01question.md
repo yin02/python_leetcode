@@ -457,3 +457,205 @@ class Solution:
         return f[x - 1][n] % 1_000_000_007
 
 ```
+
+
+
+
+
+
+# [3181. Maximum Total Reward Using Operations II](https://leetcode.com/problems/maximum-total-reward-using-operations-ii/description/)
+
+You are given an integer array `rewardValues` of length `n`, representing the values of rewards.
+
+Initially, your total reward `x` is 0, and all indices are **unmarked** . You are allowed to perform the following operation **any**  number of times:
+
+- Choose an **unmarked**  index `i` from the range `[0, n - 1]`.
+- If `rewardValues[i]` is **greater**  than your current total reward `x`, then add `rewardValues[i]` to `x` (i.e., `x = x + rewardValues[i]`), and **mark**  the index `i`.
+
+Return an integer denoting the **maximum ** total reward you can collect by performing the operations optimally.
+
+**Example 1:** 
+
+<div class="example-block">
+Input: rewardValues = [1,1,3,3]
+
+Output: 4
+
+Explanation:
+
+During the operations, we can choose to mark the indices 0 and 2 in order, and the total reward will be 4, which is the maximum.
+
+**Example 2:** 
+
+<div class="example-block">
+Input: rewardValues = [1,6,4,3,2]
+
+Output: 11
+
+Explanation:
+
+Mark the indices 0, 2, and 1 in order. The total reward will then be 11, which is the maximum.
+
+**Constraints:** 
+
+- `1 <= rewardValues.length <= 5 * 10^4`
+- `1 <= rewardValues[i] <= 5 * 10^4`
+
+### 方法一：动态规划
+
+记 `rewardValues` 的最大值为 $m$，因为最后一次操作前的总奖励一定小于等于 $m-1$，所以可获得的最大总奖励小于等于 $2m-1$。假设上一次操作选择的奖励值为 $x_1$，那么执行操作后的总奖励 $x \geq x_1$。根据题意，后面任一操作选择的奖励值 $x_2$ 一定都大于 $x$，从而有 $x_2 > x_1$，因此执行的操作是按照奖励值单调递增的。
+
+根据以上推断，首先将 `rewardValues` 从小到大进行排序，使用 `dp[k]` 表示总奖励 $k$ 是否可获得，初始时 `dp[0] = 1`，表示不执行任何操作获得总奖励 0。然后我们对 `rewardValues` 进行遍历，令当前值为 $x$，那么对于 $k \in [x, 2x-1]$（将 $k$ 倒序枚举），将 `dp[k]` 更新为 `dp[k - x] | dp[k]`（符号 `|` 表示或操作），表示先前的操作可以获得总奖励 $k - x$，那么加上 $x$ 后，就可以获取总奖励 $k$。最后返回 `dp` 中可以获得的最大总奖励。
+
+
+
+
+先会这个吧
+```python
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        rewardValues.sort()
+        m = rewardValues[-1]
+        dp = [0] * (2 * m)
+        dp[0] = 1
+        for x in rewardValues:
+            for k in range(2 * x - 1, x - 1, -1):
+                if dp[k - x] == 1:
+                    dp[k] = 1
+        res = 0
+        for i in range(len(dp)):
+            if dp[i] == 1:
+                res = i
+        return res
+
+```
+
+第二个
+
+```py
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        #表示当前奖励value是 x 时，能够获得的最大总奖励
+        @cache
+        def dfs(x: int) -> int:
+            i = bisect_right(rewardValues, x)
+            ans = 0
+            #比 x大的奖励
+            for v in rewardValues[i:]:
+                # v+更新的dfs
+                ans = max(ans, v + dfs(x + v))
+            return ans
+
+        rewardValues.sort()
+        return dfs(0)
+
+```
+
+
+
+
+
+
+更快时间
+```py
+f[i][j] 表示前i个数中，是否能够和为jd
+
+v= rewardValues[i]选或者不选
+不选：f[i][j] = f[i-1][j]
+选：f[i][j] = f[i-1][j-v]
+or
+二进制的优化
+0 | 0 = 0
+0 | 1 = 1
+1 | 0 = 1
+1 | 1 = 1
+
+
+整数类型：
+byte: 8 bit
+int：通常为 4 字节（32 位）
+long：通常为 8 字节（64 位）
+short：通常为 2 字节（16 位）
+byte：1 字节（8 位）
+
+一般来说 常用的应该是64 bit 用for循环
+如果是位运算的话就是 1 bit ， 64倍提速
+1 << v，将 1 左移 v 位，1 << 3 的结果是 0000 1000
+
+(1 << v) - 1:
+
+这个表达式会生成一个低于 v 的所有位都是 1 的二进制数。
+例如，(1 << 3) - 1 会变成 0000 0111。
+
+f & ((1 << v) - 1):
+
+将 f 和上述结果进行按位与运算。这会保留 f 中低于 v 的位，其余位将被置为 0
+计算 (1 << v) - 1:
+1 << 3 变成 0000 1000
+0000 1000 - 1 得到 
+算 f & ((1 << v) - 1):
+                  0000 0111
+f = 13 的二进制为 0000 1101
+                0000 0101 (结果)
+
+
+bitset优化，不能选重复的 ，因为后面的x要大于和才行那不可能
+
+问：为什么 2m−1 是答案的上界？
+仔细读这句话5遍，所以这题最后一步m必选，那么有m情况下 2m-1也必然是最大的结果
+
+答：如果最后一步选的数是 x，而 x<m，那么把 x 替换成 m 也符合要求，矛盾，所以最后一步选的一定是 m。在选 m 之前，元素和至多是 m−1，选了 m 之后，元素和至多是 2m−1。我们无法得到比 2m−1 更大的元素和。
+
+mask = 1<<V-1
+f &mask
+
+```
+```py
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        f = 1
+        for v in sorted(set(rewardValues)):
+          # 首先得到低位的T和F ，1和0， 移动-1 然后andf，得到之前状态的1，0
+          #再次移动
+            f |= (f & ((1 << v) - 1)) << v
+        return f.bit_length() - 1#变成index 才是这个j
+
+```
+再次优化
+设 m=max(rewardValues)，如果数组中包含 m−1，则答案为 2m−1，无需计算 DP。
+```py
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        m = max(rewardValues)
+        if m - 1 in rewardValues:
+            return m * 2 - 1
+
+        f = 1
+        for v in sorted(set(rewardValues)):
+            f |= (f & ((1 << v) - 1)) << v
+        return f.bit_length() - 1 #从有1的那个长度 -1
+
+
+```
+
+优化三
+如果有两个不同元素之和等于 m−1，也可以直接返回 2m−1。
+
+```py
+
+class Solution:
+    def maxTotalReward(self, rewardValues: List[int]) -> int:
+        m = max(rewardValues)
+        s = set()
+        for v in rewardValues:
+            if v in s:
+                continue
+            if v == m - 1 or m - 1 - v in s:
+                return m * 2 - 1
+            s.add(v)
+
+        f = 1
+        for v in sorted(s):
+            f |= (f & ((1 << v) - 1)) << v
+        return f.bit_length() - 1
+```
