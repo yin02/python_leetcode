@@ -618,6 +618,7 @@ class Solution:
           # 首先得到低位的T和F ，1和0， 移动-1 然后andf，得到之前状态的1，0
           #再次移动
             f |= (f & ((1 << v) - 1)) << v
+            #f.bit_length()会给你多1真正的长度
         return f.bit_length() - 1#变成index 才是这个j
 
 ```
@@ -659,3 +660,5 @@ class Solution:
             f |= (f & ((1 << v) - 1)) << v
         return f.bit_length() - 1
 ```
+
+
