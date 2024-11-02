@@ -516,14 +516,15 @@ class Solution:
     def maxTotalReward(self, rewardValues: List[int]) -> int:
         rewardValues.sort()
         m = rewardValues[-1]
-        dp = [0] * (2 * m)
-        dp[0] = 1
+        dp = [0] * (2 * m) # 2m-1是最大的总和
+        dp[0] = 1# 0 可到达
         for x in rewardValues:
             for k in range(2 * x - 1, x - 1, -1):
                 if dp[k - x] == 1:
                     dp[k] = 1
         res = 0
         for i in range(len(dp)):
+            #更新到最后一个 i
             if dp[i] == 1:
                 res = i
         return res
