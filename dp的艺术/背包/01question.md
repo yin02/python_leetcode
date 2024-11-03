@@ -659,3 +659,97 @@ class Solution:
             f |= (f & ((1 << v) - 1)) << v
         return f.bit_length() - 1
 ```
+
+
+# [1049. Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/description/)
+
+You are given an array of integers `stones` where `stones[i]` is the weight of the `i^th` stone.
+
+We are playing a game with the stones. On each turn, we choose any two stones and smash them together. Suppose the stones have weights `x` and `y` with `x <= y`. The result of this smash is:
+
+- If `x == y`, both stones are destroyed, and
+- If `x != y`, the stone of weight `x` is destroyed, and the stone of weight `y` has new weight `y - x`.
+
+At the end of the game, there is **at most one**  stone left.
+
+Return the smallest possible weight of the left stone. If there are no stones left, return `0`.
+
+**Example 1:** 
+
+```
+Input: stones = [2,7,4,1,8,1]
+Output: 1
+Explanation:
+We can combine 2 and 4 to get 2, so the array converts to [2,7,1,8,1] then,
+we can combine 7 and 8 to get 1, so the array converts to [2,1,1,1] then,
+we can combine 2 and 1 to get 1, so the array converts to [1,1,1] then,
+we can combine 1 and 1 to get 0, so the array converts to [1], then that's the optimal value.
+```
+
+**Example 2:** 
+
+```
+Input: stones = [31,26,33,21,40]
+Output: 5
+```
+
+**Constraints:** 
+
+- `1 <= stones.length <= 30`
+- `1 <= stones[i] <= 100`
+
+
+```py
+class Solution:
+    def lastStoneWeightII(self, stones: List[int]) -> int:
+        # we want the minium absoulte value, definly bunch of postive and negative,
+        # sum(stones) - neg represnets the postive
+        # postive - negative is the minium (sum - neg) - neg, 
+        # consider edge that the negative most  is sum//2
+        # for absoulte value is minium, the negative should closer sum//2
+        # we shoud find solution that close sum//2
+
+
+
+        #1.dp[i][j] from nums[:i] the weight is j True or False  
+        #2. dp[i][j] = dp[i-1][j] not enough keep previous state, enough bc we use t or f so is dp[i-1][j] or dp[i][j-stone] either satisfy is fine
+        #3. dp[0][0] = 0
+        #4. 1 vertical for all itemes , 2. horizontal for all possible weights
+        #5. 
+        total = sum(stones)
+        n,m = len(stones), total//2
+        dp = [[False]*(m+1) for _ in range(n+1)]
+        dp[0][0] =True
+        for i in range(n):# all items
+            for j in range(m+1):# all weights
+                if j < stones[i]:
+                    dp[i+1][j] = dp[i][j] # if  i want i-1 , i should start from 1,n+1
+                else:
+                    dp[i+1][j] = dp[i][j] or dp[i][j-stones[i]]
+        ans = None # True or False
+        for j in range(m,-1,-1): # reverse get the maxium   
+            if dp[n][j]:# 这边是n必须要记住，因为问的是前n个
+                ans =  total-2*j
+                break
+        return ans
+# dp[i+1] only related to dp[i] so rolling array optimizaie
+#i+1 行的状态都是 从i行来的, dp[j-stones[i]] 已经由上面更新过了，但是我们要知道dp[j]是根据上面一行（i行）的旧状态来的，正序需要前面的，但是前面的会被update
+# if是新状态的话，所以逆序就不会，因为一位的倒序都是用的旧状态
+# for one array , we only use the weight we can up to, not have the index
+        total = sum(stones)
+        n,m = len(stones),total//2 # n is for items, m is for the target weight
+        dp = [False] *(m+1)# target number size
+        dp[0] = True # weight is 0, we cannot choose
+        for weight in stones:# vertical,all items , not index
+            for j in range(m,weight-1,-1):#horizontal,target weight, when remaining space is enough,not enough the space is not change
+                dp[j] |= dp[j-weight] # or dp[j] = dp[j] or dp[j-weight] 
+        for j in range(m,-1,-1):
+            if dp[j]:
+                ans = total - 2*j
+                break
+        return ans
+
+
+
+
+```
