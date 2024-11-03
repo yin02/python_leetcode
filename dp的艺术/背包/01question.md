@@ -516,14 +516,15 @@ class Solution:
     def maxTotalReward(self, rewardValues: List[int]) -> int:
         rewardValues.sort()
         m = rewardValues[-1]
-        dp = [0] * (2 * m)
-        dp[0] = 1
+        dp = [0] * (2 * m) # 2m-1是最大的总和
+        dp[0] = 1# 0 可到达
         for x in rewardValues:
             for k in range(2 * x - 1, x - 1, -1):
                 if dp[k - x] == 1:
                     dp[k] = 1
         res = 0
         for i in range(len(dp)):
+            #更新到最后一个 i
             if dp[i] == 1:
                 res = i
         return res
@@ -618,6 +619,7 @@ class Solution:
           # 首先得到低位的T和F ，1和0， 移动-1 然后andf，得到之前状态的1，0
           #再次移动
             f |= (f & ((1 << v) - 1)) << v
+            #f.bit_length()会给你多1真正的长度
         return f.bit_length() - 1#变成index 才是这个j
 
 ```
@@ -661,6 +663,7 @@ class Solution:
 ```
 
 
+<<<<<<< HEAD
 # [1049. Last Stone Weight II](https://leetcode.com/problems/last-stone-weight-ii/description/)
 
 You are given an array of integers `stones` where `stones[i]` is the weight of the `i^th` stone.
@@ -753,3 +756,5 @@ class Solution:
 
 
 ```
+=======
+>>>>>>> 9adfe26affa5de23bf0360490c1d107352e52e91
