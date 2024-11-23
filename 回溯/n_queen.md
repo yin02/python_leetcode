@@ -54,3 +54,5 @@ class Solution:
 sol = Solution()
 print(sol.solveNQueens(4))
 ```
+
+![alt text](image-1.png)
